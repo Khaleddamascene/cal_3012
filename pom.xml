@@ -22,11 +22,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.14</version>
-        </dependency>
 
         <!-- JUnit 5 engine to actually run the tests -->
         <dependency>
