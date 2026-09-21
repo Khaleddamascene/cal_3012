@@ -1,37 +1,50 @@
 pipeline {
     agent any
+
     tools {
+        jdk 'jdk-21.0.12'
         maven 'Maven3'
     }
+
     environment {
         PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
         DOCKERHUB_CREDENTIALS_ID = 'Docker_ID'
-        DOCKERHUB_REPO = 'khaledmarai/cal_3012'
+        DOCKERHUB_REPO = 'khaledmarai/Cal_3012_Demo'
         DOCKER_IMAGE_TAG = 'latest'
     }
 
     stages {
-        stage ('check'){
-            steps{
+
+        stage('Checkout') {
+            steps {
                 git 'https://github.com/Khaleddamascene/cal_3012.git'
             }
         }
-        stage ('build'){
-            steps{
-                bat 'mvn clean install'
+
+        stage('Run Tests') {
+            steps {
+                bat 'mvn clean test'
             }
         }
 
-        stage('test') {
-            steps{
-                bat 'mvn test'
+        stage('Code Coverage') {
+            steps {
+                bat 'mvn jacoco:report'
             }
         }
-        stage('jacoco'){
-            steps{
+
+        stage('Publish Test Results') {
+            steps {
+                junit '*/target/surefire-reports/.xml'
+            }
+        }
+
+        stage('Publish Coverage Report') {
+            steps {
                 jacoco()
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -49,5 +62,6 @@ pipeline {
                 }
             }
         }
+
     }
 }
